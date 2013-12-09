@@ -1,0 +1,84 @@
+#include <iostream>
+#include <cmath>
+#include <set>
+
+using namespace std;
+
+bool equal(double a, double b){
+    if (abs(a-b) < 0.01) return true;
+    return false;
+}
+
+bool has(multiset<double> &s, double r, 
+        bool first=true, double op1=0, double op2=0, double result=0){
+
+    cout << first << ' ' << op1 << ' ' << op2 << ' ' << result << endl;
+
+    if (!first){
+        s.erase(s.find(op1));
+        s.erase(s.find(op2));
+        s.insert(result);
+    }
+
+    cout << "+++++++++++++" << endl;
+
+    cout << "--------" << endl;
+    for (multiset<double>::iterator i = s.begin(); i != s.end(); i ++){
+        cout << *i << ' ';
+    }
+    cout << endl;
+
+    if (s.empty()) return false;
+    if (s.size() == 1 && !equal(*s.begin(), r)) {
+        s.erase(s.find(result));
+        s.insert(op1);
+        s.insert(op2);
+        return false;
+    }
+    if (s.size() == 1 && equal(*s.begin(), r)) return true;
+
+    int i = 0;
+    for (multiset<double>::iterator i1 = s.begin(); 
+            i < s.size()-1; i ++, i1 ++){
+        multiset<double>::iterator i2 = i1;
+        for (i2 ++; i2 != s.end(); i2 ++){
+            double _op1 = *i1;
+            double _op2 = *i2;
+            if (has(s, r, false, _op1, _op2, _op1+_op2)) return true;
+            if (has(s, r, false, _op1, _op2, _op1-_op2)) return true;
+            if (has(s, r, false, _op1, _op2, _op2-_op1)) return true;
+            if (has(s, r, false, _op1, _op2, _op1*_op2)) return true;
+            if (_op2 != 0)
+                if (has(s, r, false, _op1, _op2, _op1/_op2)) return true;
+            if (_op1 != 0)
+                if (has(s, r, false, _op1, _op2, _op2/_op1)) return true;
+        }
+    }
+    if (!first){
+        s.erase(s.find(result));
+        s.insert(op1);
+        s.insert(op2);
+    }
+    return false;
+}
+
+
+int main(){
+
+    int C;
+    cin>>C;
+    while (C--){
+        multiset<double> s;
+        int M, N;
+        cin>>M>>N;
+        while (M--){
+            double temp;
+            cin >> temp;
+            s.insert(temp);
+        }
+        if (has(s, N)) cout << "Yes" << endl;
+        else cout << "No" << endl;
+    }
+
+    return 0;
+}

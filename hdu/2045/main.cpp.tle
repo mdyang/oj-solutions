@@ -1,0 +1,40 @@
+#include<iostream>
+#include<memory.h>
+using namespace std;
+int c,n,l[50];
+void dfs(){
+    int i,j;
+    for(i=1;i<n;i++){
+        for(j=l[i]+1;j<=3;j++){
+            if(i>0){
+                if(j!=l[i-1]){
+                    if(i==n-1){
+                        if(j!=l[0])c++;
+                    }
+                    else{
+                        l[i]=j;
+                        break;
+                    }
+                }
+            }
+            else{
+                l[i]=j;
+                break;
+            }
+        }
+        if(j>3){
+            if(i<=0)break;
+            l[i]=0;
+            i-=2;
+        }
+    }
+}
+int main(){
+    while(cin>>n){
+        if(n==1){cout<<3<<endl;continue;}
+        memset(l,0,sizeof(l));
+        c=0;l[0]=1;dfs();
+        cout<<c<<endl;
+    }
+    return 0;
+}
