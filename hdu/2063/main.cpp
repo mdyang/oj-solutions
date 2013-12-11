@@ -1,25 +1,39 @@
 #include<iostream>
 #include<memory.h>
 using namespace std;
-bool N[500],M[500];
-int main(){
-	int k,m,n;
-	while(1){
-		cin>>k;
-		if(!k)break;
-		memset(N,500,sizeof(bool));
-		memset(M,500,sizeof(bool));
-		cin>>m>>n;
-		while(k--){
-			int a,b;
-			cin>>a>>b;
-			M[a-1]=true;
-			N[b-1]=true;
+bool matrix[512][512],d[512];
+int n[512];
+int K,M,N;
+bool find(int a){
+	for(int i=1;i<=N;i++){
+		if(!d[i]&&matrix[a][i]){
+			d[i]=true;
+			if(!n[i]||find(n[i])){
+				n[i]=a;
+				return true;
+			}
 		}
-		int c=0,d=0;
-		for(int i=0;i<m;i++)if(M[i])c++;
-		for(int i=0;i<n;i++)if(N[i])d++;
-		cout<<(c<d?c:d)<<endl;
+	}
+	return false;
+}
+int main(){
+	while(1){
+		cin>>K;
+		if(!K)break;
+		cin>>M>>N;
+		memset(matrix,0,sizeof(matrix));
+		memset(n,0,sizeof(n));
+		int i=K,j,k;
+		while(i--){
+			cin>>j>>k;
+			matrix[j][k]=true;
+		}
+		int c=0;
+		for(int i=1;i<=M;i++){
+			memset(d,0,sizeof(d));
+			if(find(i))c++;
+		}
+		cout<<c<<endl;
 	}
 	return 0;
 }
