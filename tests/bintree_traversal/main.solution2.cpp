@@ -3,12 +3,20 @@
 
 using namespace std;
 
+const int ACCESSED = 1;
+
 typedef struct _node
 {
 	int data;
 	struct _node* left;
 	struct _node* right;
 } node;
+
+typedef struct _record
+{
+	node* node;
+	int status;
+} record;
 
 node* create_node(int data)
 {
@@ -17,6 +25,14 @@ node* create_node(int data)
 	n->left = NULL;
 	n->right = NULL;
 	return n;
+}
+
+record create_record(node* node)
+{
+	record r;
+	r.node = node;
+	r.status = 0;
+	return r;
 }
 
 /*
@@ -55,15 +71,65 @@ void postorder_recursive(node* root)
 
 void preorder_nonrecursive(node* root)
 {
+	vector<record> stack;
+	stack.push_back(create_record(root));
+	while (stack.size() > 0)
+	{
+		record r = stack.back();
+		stack.pop_back();
+		if (r.node == NULL) continue;
+		if (!(r.status & ACCESSED))
+		{
+			r.status |= ACCESSED;
+			stack.push_back(create_record(r.node->right));
+			stack.push_back(create_record(r.node->left));
+			stack.push_back(r);
+		}
+		else
+			cout<<r.node->data<<' ';
+	}
 }
 
 void inorder_nonrecursive(node* root)
 {
-	vector<node*> stack;
+	vector<record> stack;
+	stack.push_back(create_record(root));
+	while (stack.size() > 0)
+	{
+		record r = stack.back();
+		stack.pop_back();
+		if (r.node == NULL) continue;
+		if (!(r.status & ACCESSED))
+		{
+			r.status |= ACCESSED;
+			stack.push_back(create_record(r.node->right));
+			stack.push_back(r);
+			stack.push_back(create_record(r.node->left));
+		}
+		else
+			cout<<r.node->data<<' ';
+	}
 }
 
 void postorder_nonrecursive(node* root)
 {
+	vector<record> stack;
+	stack.push_back(create_record(root));
+	while (stack.size() > 0)
+	{
+		record r = stack.back();
+		stack.pop_back();
+		if (r.node == NULL) continue;
+		if (!(r.status & ACCESSED))
+		{
+			r.status |= ACCESSED;
+			stack.push_back(r);
+			stack.push_back(create_record(r.node->right));
+			stack.push_back(create_record(r.node->left));
+		}
+		else
+			cout<<r.node->data<<' ';
+	}
 }
 
 int main()
