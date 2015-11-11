@@ -60,6 +60,11 @@ void preorder_nonrecursive(node* root)
 void inorder_nonrecursive(node* root)
 {
 	vector<node*> stack;
+	stack.push_back(root);
+	while (!stack.empty())
+	{
+		
+	}
 }
 
 void postorder_nonrecursive(node* root)
